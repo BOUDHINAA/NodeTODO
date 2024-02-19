@@ -80,51 +80,38 @@ router.get('/delete/:id', function(req, res, next) {
         });
 });
 
-// GET form to edit contact by ID
 
+
+// GET form to edit contact by ID
 router.get('/update/:id', function(req, res, next) {
     const contactId = req.params.id;
 
-    
     Contact.findById(contactId)
         .then(contact => {
-            if (!contact) {
-               
-                res.render('contacts', { message: 'Contact not found.' });
-            } else {
-                
-                res.render('update_contact', { contact });
-            }
+            res.render('edit_contact.twig', { contact: contact });
         })
         .catch(error => {
-            console.error('Error fetching contact:', error);
-            
-            res.render('contacts', { message: 'Failed to fetch contact.' });
+            console.error('Error finding contact by ID for edit:', error);
+            res.render('error.twig', { message: 'Error finding contact for edit by ID' });
         });
 });
 
-
-router.post('/update/:id', function(req, res, next) {
+// POST update contact by ID
+router.post('/edit/:id', function(req, res, next) {
     const contactId = req.params.id;
-    const { fullName, phone } = req.body;
 
-    
-    Contact.findByIdAndUpdate(contactId, { fullName, phone }, { new: true })
+    Contact.findByIdAndUpdate(contactId, {
+        FullName: req.body.FullName,
+        Phone: req.body.Phone
+    }, { new: true })
         .then(updatedContact => {
-            if (!updatedContact) {
-                
-                res.render('contacts', { message: 'Contact not found.' });
-            } else {
-                
-                res.render('contacts', { message: 'Contact updated successfully.', contact: updatedContact });
-            }
+            console.log("Contact updated:", updatedContact);
+            res.redirect('/contacts');
         })
         .catch(error => {
             console.error('Error updating contact:', error);
-            
-            res.render('contacts', { message: 'Failed to update contact.' });
+            res.status(500).json({ error: 'Failed to update contact' });
         });
 });
-
 
 module.exports = router;

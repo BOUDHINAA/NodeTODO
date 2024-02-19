@@ -17,7 +17,8 @@ const mongoose = require('mongoose');
 const configDB = require('./database/mongodb.json');
 
 // Configuration de la connexion à MongoDB ( avec promess )
-mongoose.connect(configDB.mongo.uri, { useNewUrlParser: true, useUnifiedTopology: true, bufferCommands: false })  .then(() => {
+mongoose.connect(configDB.mongo.uri, { useNewUrlParser: true, useUnifiedTopology: true, bufferCommands: false }) 
+.then(() => {
     console.log("Connected to DB !!");
   })
   .catch((error) => {
